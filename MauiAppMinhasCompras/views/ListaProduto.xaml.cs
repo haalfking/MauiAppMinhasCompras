@@ -16,11 +16,18 @@ public partial class ListaProduto : ContentPage
 
     protected async override void OnAppearing()
     {
-        lista.Clear();
+        try
+        {
+            lista.Clear();
 
-        List<Produto> tmp = await App.Db.Getall();
+            List<Produto> tmp = await App.Db.Getall();
 
-		tmp.ForEach( i => lista.Add(i));
+            tmp.ForEach(i => lista.Add(i));
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("ops", ex.Message, "ok");
+        }
     }
 
     private void ToolbarItem_Clicked(object sender, EventArgs e)
@@ -38,13 +45,20 @@ public partial class ListaProduto : ContentPage
 
     private async void txt_search_TextChanged(object sender, TextChangedEventArgs e)
     {
-		string q = e.NewTextValue;
+        try
+        {
+            string q = e.NewTextValue;
 
-		lista.Clear();
+            lista.Clear();
 
-        List<Produto> tmp = await App.Db.Search(q);
+            List<Produto> tmp = await App.Db.Search(q);
 
-        tmp.ForEach(i => lista.Add(i));
+            tmp.ForEach(i => lista.Add(i));
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("ops", ex.Message, "ok");
+        }
     }
 
     private void ToolbarItem_Clicked_1(object sender, EventArgs e)
@@ -82,5 +96,24 @@ public partial class ListaProduto : ContentPage
         {
             await DisplayAlert("Erro", ex.Message, "OK");
         }
+    }
+
+    private void lst_produtos_ItemSelected(object sender, SelectedItemChangedEventArgs e)
+    {
+        try
+        {
+            Produto p = e.SelectedItem as Produto;
+
+            Navigation.PushAsync(new views.EditarProduto
+                {
+                BindingContext = p
+            });
+
+        }
+        catch (Exception ex)
+        {
+             DisplayAlert("Erro", ex.Message, "OK");
+        }
+
     }
 }
