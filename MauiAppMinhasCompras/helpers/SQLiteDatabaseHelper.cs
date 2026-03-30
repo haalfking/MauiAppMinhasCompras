@@ -44,6 +44,13 @@ namespace MauiAppMinhasCompras.helpers
 
         }
 
+        public Task<List<Produto>> GetByPeriodo(DateTime inicio, DateTime fim)
+        {
+            return _conn.Table<Produto>()
+                        .Where(p => p.DataCadastro >= inicio && p.DataCadastro <= fim)
+                        .ToListAsync();
+        }
+
 
     }
 }
